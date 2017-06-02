@@ -1,0 +1,14 @@
+name: Duels
+version: 0.4
+main: me.borawski.duels.Duels
+description: Custom dueling
+
+commands:
+     duel:
+          description: Join a dueling queue!
+     arena:
+          description: Create or edit arenas!
+     elo:
+          description: Check your ELO!
+     summonduelist:
+          description: Fix the position of the duelist NPC!

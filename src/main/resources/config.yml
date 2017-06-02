@@ -1,0 +1,23 @@
+host: localhost
+table: duels
+name: mcc
+user: root
+pass: 1024311
+arenas:
+     gladiator:
+          first: 0,0,0,0,0
+          second: 0,0,0,0,0
+duels:
+     diamond:
+               items:
+                    - DIAMOND_SWORD 1 name:§rDiamond_Sword lore:Test|
+     iron:
+               items:
+                    - IRON_SWORD 1 name:§rIron_Sword lore:Test|
+     bow:
+               items:
+                    - BOW 1 name:§rBow lore:Test|
+                    - ARROW 32 name:&rArrow lore:Test|
+     magic:
+               items:
+                    - STICK 1 name:§rWand lore:Test|
