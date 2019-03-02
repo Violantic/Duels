@@ -5,7 +5,10 @@
 package me.borawski.duels.backend.queue;
 
 import me.borawski.duels.Duels;
+import me.borawski.duels.arena.Arena;
+import me.borawski.duels.backend.database.OnlineUser;
 import me.borawski.duels.util.DuelUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,12 +26,16 @@ public class QueueHandler implements Runnable {
     private List<Queue> queueList;
     private Map<UUID, UUID> matched;
     private Map<UUID, Map<Integer, ItemStack>> contents;
+    private Set<String> availableArenas;
+    private Map<UUID, String> currentArenas;
 
     public QueueHandler(Duels instance) {
         this.instance = instance;
         this.queueList = new ArrayList<Queue>();
         this.matched = new ConcurrentHashMap<UUID, UUID>();
         this.contents = new ConcurrentHashMap<UUID, Map<Integer, ItemStack>>();
+        this.availableArenas = new HashSet<>();
+        this.currentArenas = new ConcurrentHashMap<>();
     }
 
     public Duels getInstance() {
@@ -49,6 +56,14 @@ public class QueueHandler implements Runnable {
 
     public void setMatched(Map<UUID, UUID> matched) {
         this.matched = matched;
+    }
+
+    public Set<String> getAvailableArenas() {
+        return availableArenas;
+    }
+
+    public Map<UUID, String> getCurrentArenas() {
+        return currentArenas;
     }
 
     public void storeAndClearInventory(final Player player){
@@ -139,14 +154,30 @@ public class QueueHandler implements Runnable {
         getQueueList().stream().forEach(new Consumer<Queue>() {
             public void accept(Queue queue) {
                 if (!queue.canMatch()) return;
+                if (availableArenas.size() == 0) return;
 
                 // Sequentially select top 2 players from every queue. //
                 // TODO: Filter through queue via ELO //
                 final Player one = getInstance().getServer().getPlayer(queue.getTop());
+                final OnlineUser player = getInstance().getUserManager().queryOnline(one.getUniqueId());
                 queue.remove(queue.getTop());
 
-                final Player two = getInstance().getServer().getPlayer(queue.getTop());
-                queue.remove(queue.getTop());
+                OnlineUser first = getInstance().getUserManager().queryOnline(queue.getList().get(0));
+                final int[] distance = {Math.abs(first.getElo() - player.getElo())};
+                final int[] idx = {0};
+
+                queue.getList().forEach((other) -> {
+                    OnlineUser user = getInstance().getUserManager().queryOnline(other);
+                    int otherDistance = Math.abs(user.getElo() - player.getElo());
+                    if(otherDistance < distance[0]) {
+                        idx[0] = queue.getList().indexOf(other);
+                        distance[0] = otherDistance;
+                    }
+                });
+
+                Player two = getInstance().getServer().getPlayer(queue.getList().get(idx[0]));
+//                final Player two = getInstance().getServer().getPlayer(queue.getTop());
+//                queue.remove(queue.getTop());
 
                 getMatched().put(one.getUniqueId(), two.getUniqueId());
                 DuelUtil.initiateDuel(queue, one, two);

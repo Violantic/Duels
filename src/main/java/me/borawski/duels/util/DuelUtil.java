@@ -6,8 +6,8 @@ package me.borawski.duels.util;
 
 import me.borawski.duels.Duels;
 import me.borawski.duels.backend.queue.Queue;
-import me.borawski.duels.frontend.arena.Arena;
-import me.borawski.duels.frontend.event.DuelStartEvent;
+import me.borawski.duels.arena.Arena;
+import me.borawski.duels.event.DuelStartEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,6 +25,8 @@ public class DuelUtil {
         Random random = new Random();
         int index = random.nextInt(Duels.getInstance().getArenaList().size());
         final Arena arena = Duels.getInstance().getArenaList().get(index);
+        Duels.getInstance().getQueueHandler().getAvailableArenas().remove(arena.getName());
+        Duels.getInstance().getQueueHandler().getCurrentArenas().put(one.getUniqueId(), arena.getName());
 
         one.sendMessage(("&a&l(!) &r&aA match has been found! Sending you to " + arena.getName() + " in 5 seconds...").replace("&", ChatColor.COLOR_CHAR + ""));
         two.sendMessage(("&a&l(!) &r&aA match has been found! Sending you to " + arena.getName() + " in 5 seconds...").replace("&", ChatColor.COLOR_CHAR + ""));
@@ -45,7 +47,7 @@ public class DuelUtil {
                 Duels.getInstance().getQueueHandler().storeAndClearInventory(one);
                 Duels.getInstance().getQueueHandler().storeAndClearInventory(two);
 
-                Duels.getInstance().getServer().getPluginManager().callEvent(new DuelStartEvent(one, two));
+                Duels.getInstance().getServer().getPluginManager().callEvent(new DuelStartEvent(gameType, one, two));
 
                 for(ItemStack item : gameType.getType()) {
                     one.getInventory().addItem(item);

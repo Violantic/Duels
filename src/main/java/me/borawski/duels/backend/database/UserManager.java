@@ -52,7 +52,7 @@ public class UserManager {
         for(String stat : user.getStatistics().keySet()) {
             getDb().setStat(uuid.toString(), stat, user.getStatistics().get(stat));
         }
-        System.out.println("[KITPVP] Saving data for : " + uuid);
+        System.out.println("[DUELS] Saving data for : " + uuid);
     }
 
     public User get(UUID uuid, UserType type) {

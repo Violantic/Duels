@@ -55,7 +55,7 @@ public class Queue {
         this.description = description;
     }
 
-    public LinkedList getList() {
+    public LinkedList<UUID> getList() {
         return list;
     }
 

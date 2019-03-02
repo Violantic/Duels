@@ -4,7 +4,11 @@
 package me.borawski.duels.backend.database;
 
 import me.borawski.duels.Duels;
+import me.borawski.duels.rating.EloBracket;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +23,7 @@ public class OnlineUser implements User {
     private String lastIp;
     private long lastPlayed;
     private Map<String, Integer> statistics;
+    private EloBracket current;
 
     public OnlineUser(UUID uuid, String name, String lastIp) {
         this.uuid = uuid;
@@ -86,6 +91,31 @@ public class OnlineUser implements User {
 
     public void addElo(int elo) {
         getStatistics().put("elo", getStatistics().get("elo")+1);
+    }
+
+    public EloBracket getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(EloBracket current) {
+        this.current = current;
+    }
+
+    public void equipGear() {
+        String prefix = getCurrent().getName().split(" ")[0].toUpperCase();
+        Player player = Duels.getInstance().getServer().getPlayer(getUUID());
+        player.getInventory().setHelmet(new ItemStack(Material.valueOf(prefix + "_HELMET")));
+        player.getInventory().setChestplate(new ItemStack(Material.valueOf(prefix + "_CHESTPLATE")));
+        player.getInventory().setLeggings(new ItemStack(Material.valueOf(prefix + "_LEGGINGS")));
+        player.getInventory().setBoots(new ItemStack(Material.valueOf(prefix + "_BOOTS")));
+    }
+
+    public void calculateNewRank() {
+        for (EloBracket eloBracket : EloBracket.values()) {
+            if(getStatistics().get("elo") >= eloBracket.getMin()) {
+                setCurrent(eloBracket);
+            }
+        }
     }
 
     public void sendMessage(String msg) {

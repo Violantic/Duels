@@ -4,7 +4,7 @@
 
 package me.borawski.duels.util;
 
-import me.borawski.duels.frontend.GUI.CustomIS;
+import me.borawski.duels.GUI.CustomIS;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -82,7 +82,7 @@ public class ItemUtil {
                     id = sort(entity);
                     itemString = itemString + " entity:" + id;
                 } catch (Exception e) {
-                    System.out.println("[FadeDuels] could not parse entity id from " + entity.toUpperCase());
+                    System.out.println("[Duels] could not parse entity id from " + entity.toUpperCase());
                 }
             }
 

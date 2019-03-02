@@ -9,15 +9,13 @@ import me.borawski.duels.backend.database.UserManager;
 import me.borawski.duels.backend.history.HistoryLogger;
 import me.borawski.duels.backend.queue.Queue;
 import me.borawski.duels.backend.queue.QueueHandler;
-import me.borawski.duels.frontend.NPCHandler;
-import me.borawski.duels.frontend.arena.Arena;
-import me.borawski.duels.frontend.command.ArenaCommand;
-import me.borawski.duels.frontend.command.DuelCommand;
-import me.borawski.duels.frontend.command.EloCommand;
-import me.borawski.duels.frontend.listener.DuelListener;
-import me.borawski.duels.frontend.listener.PlayerListener;
+import me.borawski.duels.arena.Arena;
+import me.borawski.duels.command.ArenaCommand;
+import me.borawski.duels.command.DuelCommand;
+import me.borawski.duels.command.EloCommand;
+import me.borawski.duels.listener.DuelListener;
+import me.borawski.duels.listener.PlayerListener;
 import me.borawski.duels.util.ItemUtil;
-import net.minecraft.server.v1_11_R1.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -37,10 +35,13 @@ import java.util.function.Consumer;
 public class Duels extends JavaPlugin {
 
     private static Duels instance;
+
     private QueueHandler queueHandler;
+
     private DuelsDB db;
     private UserManager userManager;
     private HistoryLogger logger;
+
     private NPCHandler npcHandler;
 
     /**
@@ -49,15 +50,19 @@ public class Duels extends JavaPlugin {
     public List<Arena> arenaList;
     public Map<String, Map<String, Object>> duelTypes;
 
-    public List<UUID> postWait;
+    private List<UUID> postWait;
 
     @Override
     public void onEnable() {
         instance = this;
+        saveDefaultConfig();
         queueHandler = new QueueHandler(this);
+
         db = new DuelsDB(this, getConfig().getString("host"), getConfig().getString("table"), getConfig().getString("name"), getConfig().getString("user"), getConfig().getString("pass"));
         userManager = new UserManager(db);
+
         logger = new HistoryLogger();
+
         npcHandler = new NPCHandler(this);
         npcHandler.setupNPC();
         System.out.println("[DUELS] There are " + npcHandler.getHumanNpc().size() + " NPC's");
@@ -80,11 +85,7 @@ public class Duels extends JavaPlugin {
                 x = player.getLocation().getX();
                 y = player.getLocation().getY();
                 z = player.getLocation().getZ();
-                npcHandler.getHumanNpc().stream().forEach(new Consumer<EntityLiving>() {
-                    public void accept(EntityLiving entityLiving) {
-                        entityLiving.setLocation(x, y, z, 0, 0);
-                    }
-                });
+                npcHandler.getHumanNpc().get(0).setLocation(x, y, z, 0, 0);
                 return false;
             }
         });

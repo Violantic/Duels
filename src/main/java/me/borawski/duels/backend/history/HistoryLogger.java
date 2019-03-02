@@ -4,7 +4,7 @@
 
 package me.borawski.duels.backend.history;
 
-import me.borawski.duels.backend.util.TimeUtil;
+import me.borawski.duels.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
