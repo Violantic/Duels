@@ -5,7 +5,7 @@
 package me.borawski.duels.command;
 
 import me.borawski.duels.Duels;
-import me.borawski.duels.GUI.custom.TesGUI;
+import me.borawski.duels.gui.custom.TesGUI;
 import me.borawski.duels.arena.Arena;
 import me.borawski.duels.util.ChatUtil;
 import me.borawski.duels.util.ItemUtil;

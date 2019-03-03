@@ -11,8 +11,10 @@ import net.minecraft.server.v1_8_R3.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +47,10 @@ public class NPCHandler {
         MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
         WorldServer nmsWorld = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
 
-        final EntityPlayer npc = new EntityPlayer(nmsServer, nmsWorld, new GameProfile(UUID.fromString("a762f560-4fce-3236-812a-b80efff0b62b"), ChatColor.GRAY + "Duelist"), new PlayerInteractManager(nmsWorld));
-
-        Location duelist = getInstance().getLocation("world", getInstance().getConfig().getString("locations.duelist"));
+        final EntityPlayer npc = new EntityPlayer(nmsServer, nmsWorld, new GameProfile(UUID.randomUUID(), ChatColor.YELLOW + "" + ChatColor.BOLD + "Click Me"), new PlayerInteractManager(nmsWorld));
+        //nmsWorld.addEntity(npc);
+        Location duelist = getInstance().NPC;
         npc.setLocation(duelist.getX(), duelist.getY(), duelist.getZ(), duelist.getYaw(), duelist.getPitch());
-
         humanNpc.add(npc);
 
         /**

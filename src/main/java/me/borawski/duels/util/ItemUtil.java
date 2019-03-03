@@ -4,7 +4,7 @@
 
 package me.borawski.duels.util;
 
-import me.borawski.duels.GUI.CustomIS;
+import me.borawski.duels.gui.CustomIS;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

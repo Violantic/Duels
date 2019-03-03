@@ -7,6 +7,7 @@ package me.borawski.duels.listener;
 import me.borawski.duels.Duels;
 import me.borawski.duels.backend.database.OnlineUser;
 import me.borawski.duels.event.DuelEndEvent;
+import me.borawski.duels.gui.custom.TesGUI;
 import me.borawski.duels.rating.EloBracket;
 import me.borawski.duels.util.ChatUtil;
 import me.borawski.duels.util.DuelUtil;
@@ -14,7 +15,6 @@ import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -59,7 +60,11 @@ public class PlayerListener implements Listener {
                 Location location = getInstance().getLocation("world", getInstance().getConfig().getString("locations.spawn"));
                 event.getPlayer().teleport(location);
 
-                int elo = getInstance().getUserManager().queryOnline(event.getPlayer().getUniqueId()).getElo();
+                OnlineUser user = getInstance().getUserManager().queryOnline(event.getPlayer().getUniqueId());
+                Duels.getInstance().getScoreboard().getTeam(user.getCurrent().getName()).addPlayer(event.getPlayer());
+                user.equipGear();
+
+                int elo = user.getElo();
                 if(elo >= EloBracket.MASTER.getMin()) {
                     getInstance().getServer().getOnlinePlayers().stream().forEach(new Consumer<Player>() {
                         public void accept(Player player) {
@@ -81,9 +86,9 @@ public class PlayerListener implements Listener {
         Location NPC = getInstance().getNpcHandler().getHumanNpc().get(0).getBukkitEntity().getLocation();
         Location playerLoc = event.getPlayer().getLocation();
         double distance = Math.sqrt(Math.pow(NPC.getX()-playerLoc.getX(), 2)+Math.pow(NPC.getZ()-playerLoc.getZ(), 2));
-        if(distance >= 3.5D) return;
+        if(distance >= 2.5D) return;
 
-        Bukkit.dispatchCommand(event.getPlayer(), "duel");
+        new TesGUI(getInstance(), event.getPlayer()).show();
     }
 
     @EventHandler
@@ -126,6 +131,13 @@ public class PlayerListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         OnlineUser user = getInstance().getUserManager().queryOnline(event.getPlayer().getUniqueId());
         EloBracket bracket = user.getCurrent();
-        event.setFormat(bracket.getColor() + "[" + bracket.getName() + "]" + ChatColor.GRAY + event.getPlayer().getName() + ": " + event.getMessage());
+        event.setFormat(bracket.getColor() + "[" + bracket.getName() + "] " + ChatColor.GRAY + event.getPlayer().getName() + ": " + event.getMessage());
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEntityEvent event) {
+        if(event.getRightClicked().getName().equalsIgnoreCase(ChatColor.YELLOW + "" + ChatColor.BOLD + "Click Me")) {
+            new TesGUI(getInstance(), event.getPlayer()).show();
+        }
     }
 }

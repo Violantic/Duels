@@ -2,13 +2,13 @@
  * Copyright (c) 2017. This code was written by Ethan Borawski, any use without permission will result in a court action. Check out my GitHub @ https://github.com/Violantic
  */
 
-package me.borawski.duels.GUI.custom;
+package me.borawski.duels.gui.custom;
 
 import me.borawski.duels.Duels;
 import me.borawski.duels.backend.queue.Queue;
-import me.borawski.duels.GUI.CustomIS;
-import me.borawski.duels.GUI.ItemGUI;
-import me.borawski.duels.GUI.MenuItem;
+import me.borawski.duels.gui.CustomIS;
+import me.borawski.duels.gui.ItemGUI;
+import me.borawski.duels.gui.MenuItem;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**

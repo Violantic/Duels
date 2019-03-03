@@ -2,6 +2,7 @@ package me.borawski.duels.rating;
 
 import me.borawski.duels.Duels;
 import org.bukkit.ChatColor;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 public enum EloBracket {
@@ -26,8 +27,9 @@ public enum EloBracket {
     DIAMOND_III("Diamond III", ChatColor.AQUA, 2150),
     DIAMOND_IV("Diamond IV", ChatColor.AQUA, 2200),
 
-    MASTER("Master", ChatColor.RED, 2400);
+    MASTER("Master I", ChatColor.RED, 2400);
 
+    private Scoreboard scoreboard = Duels.getInstance().getScoreboard();
     private String name;
     private int min;
     private ChatColor color;
@@ -37,8 +39,10 @@ public enum EloBracket {
         this.color = color;
         this.min = min;
 
-        Team team = Duels.getInstance().getServer().getScoreboardManager().getMainScoreboard().registerNewTeam(name);
-        team.setPrefix(color + "[" + name.substring(0, 1).toUpperCase() + name.split(" ")[1] + "] " + ChatColor.RESET);
+        if(scoreboard.getTeam(name) == null) {
+            Team team = scoreboard.registerNewTeam(name);
+            team.setPrefix(color + "[" + name.substring(0, 1).toUpperCase() + name.split(" ")[1] + "] " + ChatColor.RESET);
+        }
     }
 
     public String getName() {
@@ -52,4 +56,5 @@ public enum EloBracket {
     public ChatColor getColor() {
         return color;
     }
+
 }

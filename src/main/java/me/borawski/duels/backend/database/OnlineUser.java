@@ -31,6 +31,7 @@ public class OnlineUser implements User {
         this.lastIp = lastIp;
         this.lastPlayed = System.currentTimeMillis();
         this.statistics = Duels.getInstance().getDb().getStats(uuid.toString());
+        calculateNewRank();
     }
 
     public UUID getUUID() {

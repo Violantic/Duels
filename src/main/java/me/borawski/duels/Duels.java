@@ -24,6 +24,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,13 +45,14 @@ public class Duels extends JavaPlugin {
 
     private NPCHandler npcHandler;
 
-    /**
-     * variables that are access somewhere else idk
-     */
     public List<Arena> arenaList;
     public Map<String, Map<String, Object>> duelTypes;
-
     private List<UUID> postWait;
+
+    public final Location SPAWN = getLocation("world", getConfig().getString("locations.spawn"));
+    public final Location NPC = getLocation("world", getConfig().getString("locations.duelist"));
+
+    private Scoreboard scoreboard;
 
     @Override
     public void onEnable() {
@@ -65,7 +67,7 @@ public class Duels extends JavaPlugin {
 
         npcHandler = new NPCHandler(this);
         npcHandler.setupNPC();
-        System.out.println("[DUELS] There are " + npcHandler.getHumanNpc().size() + " NPC's");
+        System.out.println("[Duels] There are " + npcHandler.getHumanNpc().size() + " NPC's");
 
         setupArenas();
         setupQueues();
@@ -90,11 +92,9 @@ public class Duels extends JavaPlugin {
             }
         });
 
+        scoreboard = getServer().getScoreboardManager().getNewScoreboard();
+
         postWait = new ArrayList<UUID>();
-    }
-
-    public void onDisable() {
-
     }
 
     public static Duels getInstance() {
@@ -121,7 +121,31 @@ public class Duels extends JavaPlugin {
         return postWait;
     }
 
-    public void setupArenas() {
+    public List<Arena> getArenaList() {
+        return arenaList;
+    }
+
+    public void setArenaList(List<Arena> arenaList) {
+        this.arenaList = arenaList;
+    }
+
+    public Map<String, Map<String, Object>> getDuelTypes() {
+        return duelTypes;
+    }
+
+    public void setDuelTypes(Map<String, Map<String, Object>> duelTypes) {
+        this.duelTypes = duelTypes;
+    }
+
+    public NPCHandler getNpcHandler() {
+        return npcHandler;
+    }
+
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    private void setupArenas() {
         arenaList = new ArrayList<Arena>();
 
         for (final String key : getConfig().getConfigurationSection("arenas").getKeys(false)) {
@@ -138,11 +162,11 @@ public class Duels extends JavaPlugin {
                     return getLocation("world", getConfig().getString("arenas." + key + ".second"));
                 }
             });
-            System.out.println("[DUELS] registering arena '" + key + "'");
+            System.out.println("[Duels] registering arena '" + key + "'");
         }
     }
 
-    public void setupQueues() {
+    private void setupQueues() {
 
         this.duelTypes = new ConcurrentHashMap<String, Map<String, Object>>() {
             {
@@ -171,26 +195,6 @@ public class Duels extends JavaPlugin {
                 getQueueHandler().getQueueList().add(new Queue((String) stringObjectMap.get("name"), new String[]{""}, kit));
             }
         });
-    }
-
-    public List<Arena> getArenaList() {
-        return arenaList;
-    }
-
-    public void setArenaList(List<Arena> arenaList) {
-        this.arenaList = arenaList;
-    }
-
-    public Map<String, Map<String, Object>> getDuelTypes() {
-        return duelTypes;
-    }
-
-    public void setDuelTypes(Map<String, Map<String, Object>> duelTypes) {
-        this.duelTypes = duelTypes;
-    }
-
-    public NPCHandler getNpcHandler() {
-        return npcHandler;
     }
 
     /**

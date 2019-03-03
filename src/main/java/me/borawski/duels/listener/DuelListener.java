@@ -6,6 +6,7 @@ package me.borawski.duels.listener;
 
 import me.borawski.duels.Duels;
 import me.borawski.duels.arena.Arena;
+import me.borawski.duels.backend.database.OnlineUser;
 import me.borawski.duels.backend.queue.QueueHandler;
 import me.borawski.duels.event.DuelEndEvent;
 import me.borawski.duels.event.DuelStartEvent;
@@ -85,9 +86,15 @@ public class DuelListener implements Listener {
                 getInstance().getHistory().getBook(event.getWinner().getUniqueId());
                 getInstance().getHistory().getBook(event.getLoser().getUniqueId());
 
-                Location location = getInstance().getLocation("world", "187.5,70,492.5,0,0");
+                Location location = getInstance().SPAWN;
                 event.getWinner().teleport(location);
                 event.getLoser().teleport(location);
+
+                OnlineUser winner, loser;
+                winner = getInstance().getUserManager().queryOnline(event.getWinner().getUniqueId());
+                loser = getInstance().getUserManager().queryOnline(event.getLoser().getUniqueId());
+                winner.equipGear();
+                loser.equipGear();
 
                 getInstance().getPostWait().remove(event.getWinner().getUniqueId());
                 getInstance().getPostWait().remove(event.getLoser().getUniqueId());

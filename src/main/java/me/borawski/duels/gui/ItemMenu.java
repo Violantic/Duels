@@ -2,7 +2,7 @@
  * Copyright (c) 2017. This code was written by Ethan Borawski, any use without permission will result in a court action. Check out my GitHub @ https://github.com/Violantic
  */
 
-package me.borawski.duels.GUI;
+package me.borawski.duels.gui;
 
 import me.borawski.duels.Duels;
 import org.bukkit.Bukkit;
